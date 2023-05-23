@@ -16,7 +16,7 @@ spec:
         spec:
             containers:
                 - name: app
-                  image: matesousa/app-helm
+                  image: matesousa/app-helm:latest
                   ports:
                     - containerPort: 3000
                   env:
