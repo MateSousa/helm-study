@@ -10,6 +10,8 @@ env:
   DOCKERHUB_KEY: ${{ secrets.DOCKER_KEY }}
   IMAGE_NAME: app-helm
   DOCKERHUB_REPO: app-helm
+  GH_USERNAME: MateSousa
+  GH_SECRET: ${{ secrets.GH_SECRET }}
 
 jobs:
   build-and-deploy:
@@ -24,10 +26,10 @@ jobs:
         with:
           username: ${{ env.DOCKERHUB_USERNAME }}
           password: ${{ env.DOCKERHUB_KEY }}
-      
+
       - name: Build Docker image
         run: docker build -t ${{ env.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}:${{ github.sha }} .
-      
+
       - name: Push Docker image
         run: docker push ${{ env.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
 
@@ -36,8 +38,8 @@ jobs:
           cd app-helm
           ls -la
           sed -i 's|APP_VERSION:.*|APP_VERSION: '${{ github.sha }}'|' values.yaml 
-          git config --global user.name 'GitHub Actions'
-          git config --global user.email 'actions@github.com'
+          git config --global user.name ${{ env.GH_USERNAME }}
+          git config --global user.password ${{ env.GH_SECRET }}
           git add values.yaml
           git commit -m "Update values.yaml"
           git push
